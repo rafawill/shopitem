@@ -15,12 +15,19 @@
 
     
     <!-- models: -->
-    <script src="js/Category.js"></script> 
+    <script src="js/Category.js"></script>
+    <script src="js/ShopItem.js"></script> 
     <!-- views: -->
     <script src="js/CategoryView.js"></script>
 
     <!-- templates: -->
   <script type="text/template" id="categoryView">
+
+    <div class="modal-header">
+       <button class="close">x</button>
+       <h3>Manage categories</h3> 
+    </div>
+    <div class="modal-body">
   <form class="form-horizontal">
      <div class="control-group">
         <label>new Category</label>
@@ -29,7 +36,14 @@
      </div> 
      <ul class="categories span3"></ul>
    </form>
+   </div>
+   <div class="modal-footer">
+      <a href="#" class="btn">Close</a>
+   </div>
   </script>
+
+
+
   </head> 
  
   <body>
@@ -46,7 +60,16 @@
 	<div class="container ">
         <section class="row span6" style="margin-top: 40px;">
             <div id="app"></div>
+            <div id="categorymodal" class="modal fade hide"></div>
         </section>
     </div>
+
+    <script>
+      $(function(){
+        window.categories = new CategoryCollection();
+        window.categoryView = new CategoryView({collection:window.categories});
+        $("#categorymodal").html(window.categoryView.render().el);
+      });
+    </script>
   </body> 
 </html>
