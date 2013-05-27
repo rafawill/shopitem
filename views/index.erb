@@ -13,14 +13,37 @@
     <script src="js/vendor/bootstrap.min.js"></script> 
     <script src="js/vendor/backbone.min.js"></script> 
 
-    
+    <script src="js/AppRouter.js"></script>
     <!-- models: -->
     <script src="js/Category.js"></script>
     <script src="js/ShopItem.js"></script> 
     <!-- views: -->
     <script src="js/CategoryView.js"></script>
+    <script src="js/ShopitemView.js"></script>
+    <script src="js/ShoppingView.js"></script>
+    <script src="js/PurchasedView.js"></script>
 
     <!-- templates: -->
+    <script type="text/template" id="purchasedView">
+      <h3>Purchased:</h3>
+      <table class="table table-striped">
+        <tbody class="shoppinglist">
+        </tbody>
+      </table>
+    </script>
+
+  <script type="text/template" id="shoppingView">
+    <div class="well">
+      <textarea rows="6" class="listbox"></textarea>
+      <button class="addtolist btn btn-primary">Add to list</button>
+    </div>
+    <table class="table table-striped">
+       <tbody class="shoppinglist">
+
+       </tbody> 
+    </table> 
+  </script>  
+
   <script type="text/template" id="categoryView">
 
     <div class="modal-header">
@@ -32,7 +55,7 @@
      <div class="control-group">
         <label>new Category</label>
         <input type="text" class="category_name"></input>
-        <button class="category_add btn btn-primary"></button>
+        <button class="category_add btn btn-primary">add</button>
      </div> 
      <ul class="categories span3"></ul>
    </form>
@@ -41,7 +64,32 @@
       <a href="#" class="btn">Close</a>
    </div>
   </script>
+  
+  <script type="text/template" id="shopitemView">
+      <td>
+        <div class="btn-group">
+          <a class="delete btn btn-danger" href="#">x</a>
 
+          <%% if (model.get('purchased') == false) { %>
+            <a class="purchase btn" href="#"><i class="icon-star-empty"></i></a>
+          <%% } %>
+          
+          <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+            <%%= (model.get('category') && model.get('category').get('name').length > 0) ?                  model.get('category').get('name') : 'no category' %>
+         </a>
+         <ul class="dropdown-menu">
+          <%% if (categories != undefined) { %>
+            <%% categories.each(function(c) { %>
+              <li><a href="#" data-id="<%%= c.get('_id') %>"><%%= c.get('name') %></a></li>
+            <%% },this); %>
+          <%% } %>
+         </ul>
+        </div>
+      </td>
+      <td>
+        <p><%%= model.get('name') %></p>
+      </td>
+    </script>
 
 
   </head> 
@@ -50,26 +98,31 @@
 	<div class="navbar navbar-fixed-top"> 
       <div class="navbar-inner">
       <div class="offset1"> <a class="brand" href="#">Shopbone</a></div>
-	    <div class="container"> 
-	      <ul class="nav"> 
-	        <li class="home active"><a class="active" href="#">Home</a></li> 
+      <div class="container"> 
+        <ul class="nav"> 
+          <li class="home active"><a class="active" href="#">Home</a></li>
+          <li class="showpurchased"><a href="#purchased">Purchased</a></li>
+          <li class="divider-vertical"></li>
+          <li class="categories"><a href="#categories">Categories</a></li>
         </ul>
       </div>  
-	  </div> 
-	</div>
+    </div> 
+  </div>
 	<div class="container ">
         <section class="row span6" style="margin-top: 40px;">
-            <div id="app"></div>
+            <div id="app">
+                 
+            </div>
             <div id="categorymodal" class="modal fade hide"></div>
         </section>
     </div>
 
     <script>
-      $(function(){
-        window.categories = new CategoryCollection();
-        window.categoryView = new CategoryView({collection:window.categories});
-        $("#categorymodal").html(window.categoryView.render().el);
-      });
+     $(function() {
+      router = new AppRouter();
+      Backbone.history.start();
+    });
+
     </script>
   </body> 
 </html>
